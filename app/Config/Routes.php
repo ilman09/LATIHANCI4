@@ -31,7 +31,11 @@ $routes->setAutoRoute(true);
 
 // We get a performance increase by specifying the default
 // route since we don't have to scan directories.
-$routes->get('/', 'login::index');
+$routes->get('/', 'HelloCintroller::index');
+
+$routes->group('', ['filter' => 'authMiddleware'], function($routes) {
+    $routes->resource('product');
+});
 $routes->resource('product');
 
 $routes->resource('register');
