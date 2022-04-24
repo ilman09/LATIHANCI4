@@ -1,5 +1,5 @@
-<footer class="footer ">
-    <div class="container ">
-        <span class="text-muted ">© by DAR.</span>
-    </div>
-</footer>
+<footer class="flex text-center px-4 py-8 justify-center">
+      <p class="text-sm">
+        Copyright 2021 • All Rights Reserved by Dar
+      </p>
+    </footer>

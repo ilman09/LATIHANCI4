@@ -19,10 +19,11 @@ class Product extends ResourceController
     public function index()
     {
         
-        $products = $this->productModel->findAll();
+        $products = $this->productModel->paginate(3, 'products');
 
         $payload = [
-            "products" => $products
+            "products" => $products,
+            "pager" => $this->productModel->pager
         ];
 
         echo view('product/index', $payload);
@@ -55,14 +56,24 @@ class Product extends ResourceController
      */
     public function create()
     {
+
+        $fileName = "";
+
+        $photo = $this->request->getFile('photo');
+
+        if ($photo) {
+            $fileName = $photo->getRandomName(); // Mendapatkan nama file baru secara acak
+
+            $photo->move('photos', $fileName); // Memindahkan file ke public/photos dengan nama acak
+        }
+
         $payload = [
-            "id" => uniqid(),
             "name" => $this->request->getPost('name'),
             "stock" => (int) $this->request->getPost('stock'),
             "price" => (int) $this->request->getPost('price'),
             "category" => $this->request->getPost('category'),
+            "photo" => $fileName, // Kita simpan nama filenya saja
         ];
-
 
         $this->productModel->insert($payload);
         return redirect()->to('/product');
