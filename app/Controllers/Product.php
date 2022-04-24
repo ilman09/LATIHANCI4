@@ -18,8 +18,7 @@ class Product extends ResourceController
      */
     public function index()
     {
-        
-        $products = $this->productModel->paginate(3, 'products');
+        $products = $this->productModel->paginate(4, 'products');
 
         $payload = [
             "products" => $products,
@@ -61,10 +60,14 @@ class Product extends ResourceController
 
         $photo = $this->request->getFile('photo');
 
-        if ($photo) {
-            $fileName = $photo->getRandomName(); // Mendapatkan nama file baru secara acak
-
-            $photo->move('photos', $fileName); // Memindahkan file ke public/photos dengan nama acak
+        if ($photo->getError() ==4) {
+            $fileName =('null.jpg');
+            
+        }
+        
+        else{
+            $fileName = $photo->getRandomName();
+            $photo->move('photos', $fileName);
         }
 
         $payload = [
@@ -78,7 +81,6 @@ class Product extends ResourceController
         $this->productModel->insert($payload);
         return redirect()->to('/product');
     }
-
     /**
      * Return the editable properties of a resource object
      *
@@ -103,11 +105,27 @@ class Product extends ResourceController
      */
     public function update($id = null)
     {
+        $fileName = "";
+
+        $photo = $this->request->getFile('photo');
+
+        if ($photo->getError() ==4) {
+            $fileName = $this->request->getVar('oldphoto');
+            
+        }
+        
+        else{
+            $fileName = $photo->getRandomName();
+            $photo->move('photos', $fileName);
+            unlink('photos/' .$this->request->getVar('oldphoto'));
+        }
+
         $payload = [
             "name" => $this->request->getPost('name'),
             "stock" => (int) $this->request->getPost('stock'),
             "price" => (int) $this->request->getPost('price'),
             "category" => $this->request->getPost('category'),
+            "photo" => $fileName // Kita simpan nama filenya saja
         ];
 
         $this->productModel->update($id, $payload);
@@ -121,6 +139,8 @@ class Product extends ResourceController
      */
     public function delete($id = null)
     {
+        $products = $this->productModel->find($id);
+        unlink('photos/' .$products['photo']);
         $this->productModel->delete($id);
         return redirect()->to('/product');
     }

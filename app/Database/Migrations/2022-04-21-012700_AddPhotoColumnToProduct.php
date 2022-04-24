@@ -1,24 +1,24 @@
 <?php
 
-namespace App\Database\Migrations;
+ namespace App\Database\Migrations;
 
-use CodeIgniter\Database\Migration;
+ use CodeIgniter\Database\Migration;
 
-class AddPhotoColumnToProduct extends Migration
-{
-    public function up()
-    {
-        $fields = [
-            "photo" => [
-                "type"=> "TEXT",
-            ],
-        ];
+ class AddPhotoColumnToProduct extends Migration
+ {
+     public function up()
+     {
+         $fields = [
+             "photo" => [
+                 "type"=> "TEXT",
+             ],
+         ];
 
-        $this->forge->addColumn('products', $fields);
-    }
+         $this->forge->addColumn('products', $fields);
+     }
 
-    public function down()
-    {
-        $this->forge->dropColumn('products', 'photo');
-    }
-}
+     public function down()
+     {
+         $this->forge->dropColumn('products', 'photo');
+     }
+ } 
